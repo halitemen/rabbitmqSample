@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/streadway/amqp"
 )
@@ -12,13 +14,17 @@ var (
 )
 
 func main() {
-	fmt.Println(uri)
 	conn, err := amqp.Dial(uri)
 
 	if err != nil {
 		log.Fatalf("Dial: %s", err)
 	}
-	publish("test message", conn)
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter Message: ")
+	msgUser, _ := reader.ReadString('\n')
+
+	publish(msgUser, conn)
 }
 
 func publish(message string, conn *amqp.Connection) {
@@ -33,12 +39,16 @@ func publish(message string, conn *amqp.Connection) {
 		nil)
 
 	msg := amqp.Publishing{
-		Body: []byte("example go")}
+		Body: []byte(message)}
 
-	ch.Publish(
+	err := ch.Publish(
 		"",
 		q.Name,
 		false,
 		false,
 		msg)
+
+	if err != nil {
+		log.Fatalf("Dial: %s", err)
+	}
 }

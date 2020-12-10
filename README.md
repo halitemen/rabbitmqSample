@@ -1,3 +1,3 @@
 # RabbitMQ Example
 
-The application I wrote to learn the Go programming language
+The application I wrote to learn the GO(Lang) programming language
